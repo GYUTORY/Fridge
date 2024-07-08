@@ -11,7 +11,4 @@ const router = Router();
 router.post("/join", UserController.userJoin);
 
 
-
-
-
 export default router;
