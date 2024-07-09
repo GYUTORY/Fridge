@@ -1,6 +1,10 @@
 import express from "express";
 import formData from "express-form-data";
+import {AddressInfo} from "net";
 
+import router from "./routers/api";
+import Config from "../config";
+import Logger from "./modules/Logger";
 
 const app = express();
 
@@ -24,4 +28,10 @@ app.use(formData.parse({
 app.get('/health', (req, res) => res.status(200).end());
 app.head('/', (req, res) => res.status(200).end());
 
+app.use("/", router);
+
+const server = app.listen(Config.SERVER.PORT, () => {
+    const {address, port} = server.address() as AddressInfo;
+    Logger.info('Server listening on : ' + 'http://127.0.0.1:' + Config.SERVER.PORT);
+});
 
