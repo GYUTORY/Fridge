@@ -11,11 +11,11 @@ export default class BaseHandler {
             success: false,
             message: "데이터 검증에 실패하였습니다."
         };
-
+/*
         Logger.debug("API Response : " + JSON.stringify({
             success: false,
             message: "데이터 검증에 실패하였습니다."
-        }));
+        }));*/
 
         return res.status(200).json(response);
     }
@@ -28,11 +28,11 @@ export default class BaseHandler {
             message: message
         };
 
-        Logger.debug("API Response : " + JSON.stringify({
+  /*      Logger.debug("API Response : " + JSON.stringify({
             success: false,
             message: message
         }));
-
+*/
         return res.status(200).json(response);
 
     }
@@ -45,10 +45,10 @@ export default class BaseHandler {
             message: message
         };
 
-        Logger.debug("API Response : " + JSON.stringify({
+/*        Logger.debug("API Response : " + JSON.stringify({
             success: true,
             message: message
-        }));
+        }));*/
 
         return res.status(200).json(response);
 
