@@ -7,6 +7,9 @@ export class User {
     @Length(2, 50, { message: "Name must be between 2 and 50 characters" })
     name: string;
 
+    @Length(2, 50, { message: "Name must be between 2 and 50 characters" })
+    phone_number: string;
+
     @IsEmail({}, { message: "Invalid email format" })
     email: string;
 
@@ -16,10 +19,11 @@ export class User {
     @Max(100, { message: "Age cannot be greater than 100" })
     age?: number;
 
-    constructor(id: string, name: string, email: string, age?: number) {
+    constructor(id: string, name: string, phone_number: string, email: string, age?: number) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.age = age;
+        this.phone_number = phone_number;
     }
 }
