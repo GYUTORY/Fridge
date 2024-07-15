@@ -1,25 +1,26 @@
 import {Request, Response} from "express";
 import BaseHandler from "../BaseHandler";
-import {User, validateUser} from "../../../models/UserModel";
-
-import DataValiator from "../../../service/DataValiator";
+import {User} from "../../../models/UserModel";
+import {DataValidator} from "../../../service/DataValiator";
+import Logger from "../../../modules/Logger";
+import UserService from "../../service/user/UserService";
 
 
 class UserController extends BaseHandler {
 
     public userJoin = async (req: Request, res: Response) => {
         try {
-            // 클라이언트에서 전송된 데이터
-            const userData: User = {
-                id: req.body.id as string,
-                name: req.body.name as string,
-                email: req.body.email as string,
-                age: req.body.age ? parseInt(req.body.age) : undefined,
-            };
 
-            // 유효성 검사
-            validateUser(userData);
+            const data = await DataValidator<User>(req.body)
 
+            if(!data) {
+                return this.validErr(res);
+            }
+
+            const [joinRes, joinCode] = await UserService.userLogin(data);
+
+            if(!joinRes)
+                return this.false(res, joinCode);
 
             this.true(res, 'L01');
 
