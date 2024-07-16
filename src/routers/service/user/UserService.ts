@@ -11,36 +11,28 @@ export default class UserService {
 
 
     // https://www.prisma.io/docs/orm/prisma-client/client-extensions/query
-    public static async userLogin(user: User): Promise<[boolean, string]> {
+    public static async userLogin(userInfo: User): Promise<[boolean, string]> {
 
         try {
 
-            const phoneData = await this.getUserPhone(user.phone_number);
+            const phoneData = await this.getUserPhone(userInfo.phone_number);
 
             // 전화번호 예외처리
             if (phoneData)
                 return [false, "FX0"];
 
-            const userId = await this.generateUserId();
+            const userId = await this.setUserId();
 
             // userId 예외처리
             if (!userId)
                 return [false, "UC0"];
 
 
+            // user 등록
+            const userRegRes = await this.setUserInfo(userId, userInfo);
 
-
-
-            const createdUser = await prisma.user.create({
-                data : {
-                    user_id: userId,
-                    username: user.name,
-                    email: user.email,
-                    phone_number: user.phone_number
-                }
-            });
-
-
+            if(!userRegRes)
+                return [false, "UR0"];
 
             return [true, "UC0"];
 
@@ -50,7 +42,30 @@ export default class UserService {
         }
     }
 
-    public static async generateUserId(): Promise<string | null> {
+
+    public static async setUserInfo(userId: string, userInfo: User): Promise<boolean> {
+        try {
+
+            const createdUser = await prisma.user.create({
+                data : {
+                    user_id: userId,
+                    username: userInfo.name,
+                    email: userInfo.email,
+                    phone_number: userInfo.phone_number
+                }
+            });
+
+            return true;
+
+        } catch (err) {
+            Logger.error(err);
+            return false;
+        }
+    }
+
+
+
+    public static async setUserId(): Promise<string | null> {
         try {
             // UUID 생성
             const uuid = uuidv4();
@@ -92,6 +107,24 @@ export default class UserService {
 
         } catch (err) {
             Logger.error("getUserPhone " + err);
+            return null;
+        }
+    }
+
+    public static async getUserEmail(email: string) {
+        try {
+
+
+            const emailData = await prisma.user.findFirst({
+                where: {
+                    email: email
+                }
+            });
+
+            return !!emailData;
+
+        } catch (err) {
+            Logger.error("getUserEmail " + err);
             return null;
         }
     }

@@ -1,4 +1,4 @@
-import { Length, IsEmail, IsOptional, IsInt, Min, Max } from "class-validator";
+import { Length, IsEmail, IsOptional, IsInt, Min, Max, IS_PHONE_NUMBER } from "class-validator";
 
 export class User {
     @Length(3, 20, { message: "ID must be between 3 and 20 characters" })
@@ -25,5 +25,23 @@ export class User {
         this.email = email;
         this.age = age;
         this.phone_number = phone_number;
+    }
+}
+
+export class UserPhone {
+
+    @IS_PHONE_NUMBER
+    phone_number: string;
+    constructor(phone_number: string) {
+        this.phone_number = phone_number;
+    }
+}
+
+export class UserEmail {
+
+    @IsEmail({}, { message: "Invalid email format" })
+    email: string;
+    constructor(email: string) {
+        this.email = email;
     }
 }
