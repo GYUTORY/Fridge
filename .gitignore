@@ -1,3 +1,6 @@
 node_modules
 # Keep environment variables out of version control
 .env
+
+config/dev/.env.user
+config/rel/.env.user
