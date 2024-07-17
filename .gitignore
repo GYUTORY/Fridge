@@ -180,3 +180,10 @@ dist
 .svelte-kit
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,node
+
+
+# Ignore all files in the config folder
+config/
+
+# Ignore all files starting with .env
+.env*
