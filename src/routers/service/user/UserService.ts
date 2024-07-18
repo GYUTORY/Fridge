@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
 
 export default class UserService extends BaseService {
 
-    public static async userLogin(userInfo: UserJoin) {
+    public static async userJoin(userInfo: UserJoin) {
         try {
 
             // 전화번호 중복 검증
@@ -21,12 +21,38 @@ export default class UserService extends BaseService {
             const userId = await this.setUserId();
             if (!userId.result) return this.objFalse("UC0");
 
-            // 전화번호 중복 검증
-            const userRegRes = await this.setUserInfo(userId.obj, userInfo);
+            // userId Setting
+            userInfo.user_id = userId.obj;
+
+            // 회원가입
+            const userRegRes = await this.setUserInfo(userInfo);
 
             if (!userRegRes) return this.objFalse("UR0");
 
             return this.objTrue("UJS");
+
+        } catch (err) {
+            Logger.error(err);
+            return this.objError(err);
+        }
+    }
+
+    public static async userUpdate(userInfo: UserJoin) {
+        try {
+
+            await prisma.user.update({
+                where: {
+                    user_id: userInfo.user_id,  // 업데이트할 사용자의 ID를 지정
+                },
+                data: {
+                    username: userInfo?.name ?? '',  // 업데이트할 사용자 이름
+                    email: userInfo?.email ?? '',  // 업데이트할 사용자 이메일
+                    phone_number: userInfo.phone_number ?? ''  // 업데이트할 사용자 전화번호
+                }
+            });
+
+            return this.objTrue("U01");
+
 
         } catch (err) {
             Logger.info("잉 시발")
@@ -35,16 +61,29 @@ export default class UserService extends BaseService {
         }
     }
 
-    public static async setUserInfo(userId: string, userInfo: UserJoin) {
+
+
+    public static async setUserInfo(userInfo: UserJoin) {
         try {
-            await prisma.user.create({
+
+            const newUser = await prisma.user.create({
                 data: {
-                    user_id: userId,
-                    username: userInfo?.name ?? '',
-                    email: userInfo?.email ?? '',
-                    phone_number: userInfo.phone_number ?? ''
+                    user_id: userInfo.user_id,
+                    username: userInfo.name,
+                    email: userInfo.email,
+                    phone_number: userInfo.phone_number,
+                    logins: {
+                        create: [{
+                                login_id: userInfo.login_id,
+                                pwd: userInfo.password
+                            }]
+                    }
+                },
+                include: {
+                    logins: true
                 }
             });
+
 
             return this.objTrue("U01");
 
@@ -53,6 +92,8 @@ export default class UserService extends BaseService {
             return this.objError(err);
         }
     }
+
+
 
     public static async setUserId() {
         try {

@@ -18,6 +18,12 @@ export class UserJoinValidate {
     @Length(2, 50, { message: "Name must be between 2 and 50 characters" })
     name: string;
 
+    @Length(5, 10, { message: "Name must be between 5 and 10 characters" })
+    login_id: string;
+
+    @Length(8, 20, { message: "Name must be between 8 and 20 characters" })
+    password: string;
+
     @IsKoreanPhoneNumber({ message: "Invalid Korean phone number format. Must be in the format 010-1234-5678" })
     phone_number: string;
 
@@ -29,7 +35,14 @@ export class UserJoinValidate {
     @Max(100, { message: "Age cannot be greater than 100" })
     age: number;
 
-    constructor(id: string, name: string, phone_number: string, email: string, age: number) {
+    @IsOptional()
+    user_id: string;
+
+
+    constructor(user_id: string, id: string, name: string, phone_number: string, email: string, age: number, login_id: string, password: string) {
+        this.user_id = user_id;
+        this.login_id = login_id;
+        this.password = password;
         this.id = id;
         this.name = name;
         this.email = email;

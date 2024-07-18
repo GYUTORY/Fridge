@@ -20,7 +20,29 @@ class UserController extends BaseHandler {
                 return this.validErr(res);
             }
 
-            const userJoinRes = await UserService.userLogin(data);
+            const userJoinRes = await UserService.userJoin(data);
+
+            if(!userJoinRes.result)
+                return this.false(res, userJoinRes.message);
+
+            this.true(res, 'L01');
+
+        } catch (err) { // 유효성 검사 에러 처리
+            this.err(res, err);
+        }
+    }
+
+    public userUpdate = async (req: Request, res: Response) => {
+        try {
+
+            // req.body를 Partial<User> 타입으로 전달하여 부분적으로 사용
+            const data = await DataValidator(req.body, UserJoinValidate) as UserJoin;
+
+            if(!data) {
+                return this.validErr(res);
+            }
+
+            const userJoinRes = await UserService.userUpdate(data);
 
             if(!userJoinRes.result)
                 return this.false(res, userJoinRes.message);

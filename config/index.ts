@@ -21,9 +21,20 @@ interface ServerConfig {
     PORT: string;
 }
 
+
+interface SecurityConfig {
+    JWT_SECRET: string;
+    JWT_EXPIRES: string;
+    ITERATIONS: string;
+    KEY_LENGTH: string;
+    DIGEST: string;
+    KEY: string;
+}
+
 class Config {
     LOG: LogConfig;
     SERVER:  ServerConfig
+    SECRET: SecurityConfig;
 
     constructor() {
         this.LOG = {
@@ -34,6 +45,14 @@ class Config {
         };
         this.SERVER = {
             PORT: process.env.SERVER_PORT || "0",
+        };
+        this.SECRET = {
+            JWT_SECRET: process.env.JWT_SECRET || "",
+            JWT_EXPIRES: process.env.JWT_EXPIRES || "",
+            ITERATIONS: process.env.ITERATIONS || "",
+            KEY_LENGTH: process.env.KEY_LENGTH || "",
+            DIGEST: process.env.DIGEST || "",
+            KEY: process.env.KEY || ""
         };
     }
 }
