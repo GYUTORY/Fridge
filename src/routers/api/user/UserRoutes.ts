@@ -11,10 +11,9 @@ const router = Router();
 router.post("/join", UserController.userJoin);
 
 // 전화번호 중복 검사 ✅
-/*
 router.post("/phone/check", UserController.getUserPhone);
 
-// 전화번호 중복 검사 ✅
+// 이메일 중복 검사 ✅
 router.post("/email/check", UserController.getUserEmail);
-*/
+
 export default router;

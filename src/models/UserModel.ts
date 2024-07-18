@@ -43,10 +43,22 @@ export class UserPhoneValidate {
     @IsKoreanPhoneNumber({ message: "Invalid Korean phone number format. Must be in the format 010-1234-5678" })
     phone_number: string;
 
-    constructor(id: string, name: string, phone_number: string, email: string, age: number) {
+    constructor(phone_number: string) {
         this.phone_number = phone_number;
     }
 }
+
+
+export class UserEmailValidate {
+
+    @IsEmail({}, { message: "Invalid email format" })
+    email: string;
+
+    constructor(email: string) {
+        this.email = email;
+    }
+}
+
 
 export function IsKoreanPhoneNumber(validationOptions?: ValidationOptions) {
     return function (object: Object, propertyName: string) {

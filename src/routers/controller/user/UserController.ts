@@ -1,9 +1,11 @@
 import {Request, Response} from "express";
 import BaseHandler from "../BaseHandler";
-import {UserJoinValidate} from "../../../models/UserModel";
+import {UserEmailValidate, UserJoinValidate, UserPhoneValidate} from "../../../models/UserModel";
 import {DataValidator} from "../../../service/DataValiator";
 import Logger from "../../../modules/Logger";
 import UserService from "../../service/user/UserService";
+import {UserJoin} from "../../../entity/user/User";
+// import {UserJoin} from "../../../entity/user/User";
 
 
 class UserController extends BaseHandler {
@@ -12,18 +14,16 @@ class UserController extends BaseHandler {
         try {
 
             // req.body를 Partial<User> 타입으로 전달하여 부분적으로 사용
-            const data = await DataValidator(req.body, UserJoinValidate);
+            const data = await DataValidator(req.body, UserJoinValidate) as UserJoin;
 
             if(!data) {
                 return this.validErr(res);
             }
 
-            const [joinRes, joinCode] = await UserService.userLogin(data);
+            const userJoinRes = await UserService.userLogin(data);
 
-
-            // todo 수정해야함
-            /*if(!joinRes)
-                return this.false(res, joinCode);*/
+            if(!userJoinRes.result)
+                return this.false(res, userJoinRes.message);
 
             this.true(res, 'L01');
 
@@ -31,19 +31,18 @@ class UserController extends BaseHandler {
             this.err(res, err);
         }
     }
-/*
 
     public getUserPhone = async (req: Request, res: Response) => {
         try {
 
             // const data = await DataValidator(req.body, User)
-            const data = await DataValidator(req.body, User) as Pick<User, "phone_number">;
+            const data = await DataValidator(req.body, UserPhoneValidate) as UserJoin;
 
             if(!data) {
                 return this.validErr(res);
             }
 
-            const phoneData = await UserService.getUserPhone(data);
+            const phoneData = await UserService.getUserPhone(data.phone_number);
 
             if(!phoneData)
                 return this.true(res, "PO1");
@@ -58,13 +57,13 @@ class UserController extends BaseHandler {
     public getUserEmail = async (req: Request, res: Response) => {
         try {
 
-            const data = await DataValidator(req.body, User)
+            const data = await DataValidator(req.body, UserEmailValidate) as UserJoin;
 
             if(!data) {
                 return this.validErr(res);
             }
 
-            const emailData = await UserService.getUserEmail(data);
+            const emailData = await UserService.getUserEmail(data.email);
 
             if(!emailData)
                 return this.true(res, "EO1");
@@ -75,7 +74,7 @@ class UserController extends BaseHandler {
             this.err(res, err);
         }
     }
-*/
+
 
 
 }
